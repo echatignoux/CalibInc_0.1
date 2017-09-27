@@ -22,4 +22,4 @@ library(CalibInc)
 Analysis from the application section of the paper
 --------------------------------------------------
 
-The use of `CalibInc` package is illustrated with the code used in the application section of the paper to predict cancer incidence for LOP cancer in men using registry and hospitalization data. The code and results are available at <https://www.r-project.org/Licenses/GPL-3>.
+The use of `CalibInc` package is illustrated with the code used in the application section of the paper to predict cancer incidence for LOP cancer in men using registry and hospitalization data. The code and results are available at <https://cdn.rawgit.com/echatignoux/CalibInc/8b59aea8/Application/Application.html>.
