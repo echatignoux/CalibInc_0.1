@@ -1,0 +1,19 @@
+unnamed-chunk-1	install_github	require
+unnamed-chunk-2	library
+unnamed-chunk-3	data	lopm.CalibSet
+unnamed-chunk-4	data	lopm.Fr
+unnamed-chunk-5	$	%>%	::	as.formula	as.numeric	library	list	lopm.CalibSet	substitute
+unnamed-chunk-6	%>%	>	C	filter	form.calib	glmer	library	lopm.CalibSet
+unnamed-chunk-7	$	%>%	data_frame	lopm.CalibSet	mod.calib	predict	qplot	unique	xlab	ylab
+unnamed-chunk-8	$	%>%	>	C	exp	F	filter	fit	geom_abline	ggtitle	grid.arrange	H	I	lopm.CalibSet	mod.calib	mutate	predict	qplot	qqnorm	res	residuals	xlab	y	ylab
+unnamed-chunk-9	$	%>%	::	~	>	C	filter	form.calib	lopm.CalibSet	nobars
+unnamed-chunk-10	~	CalibInc	lopm.Fr	mod.calib
+unnamed-chunk-11	%>%	~	age	CalibInc	group_by	mod.calib	mutate	py	sum	w
+unnamed-chunk-12	%>%	dist	group_by	H	left_join	lopm.Fr	pred	py	rate.age.lopm	se	select	sum	summarise
+unnamed-chunk-13	%>%	E	exp.dist.lopm	left_join	LogNormPI	mutate	pred	pred.dist.lopm	se	se.SIR
+unnamed-chunk-14	!	%>%	|	<	>	c	dist	ggMap	ggtitle	low	mutate	NS	SIR	T	up
+unnamed-chunk-15	%>%	~	CalibInc	dist	E	group_by	H	left_join	LogNormPI	lopm.Fr	mod.calibPQL	mutate	pred	py	se	se.SIR	select	SIR	sum	summarise	w
+unnamed-chunk-16	%>%	.	==	aes	arrange	element_blank	geom_pointrange	group_by	id	low	method	mutate	qplot	row_number	SIR	SIR.compare	theme	up	xlab
+unnamed-chunk-17	%>%	~	CalibInc	LogNormPI	mod.calib	mutate	py	w	WSP
+unnamed-chunk-18	%>%	~	age	CalibInc	group_by	LogNormPI	mod.calib	mutate	py	sum	w	WSP
+unnamed-chunk-19	%>%	~	age	CalibInc	group_by	LogNormPI	mod.calib	mutate	py	sum	w	WSP

@@ -1,0 +1,17 @@
+base
+tidyverse
+ggplot2
+tibble
+tidyr
+readr
+purrr
+dplyr
+gridExtra
+magrittr
+knitr
+devtools
+httr
+rmarkdown
+CalibInc
+Matrix
+lme4

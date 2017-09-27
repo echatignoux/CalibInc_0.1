@@ -1,0 +1,22 @@
+##' French administrative districts limits (Departement borders),
+##' simplifyied to be used with ggMap (polygg type)
+##'
+##'
+##'
+##'
+##' \itemize{
+##' \item \code{long} numeric (123255.6089--1242403.8507)
+##' \item \code{lat} numeric (6049568.1597--7110958.5478)
+##' \item \code{order} numeric (1--38)
+##' \item \code{hole} logical (0--0)
+##' \item \code{piece} factor avec 1 niveaux (1--1)
+##' \item \code{id} dept number : character (01--95)
+##' \item \code{group} factor avec 96 niveaux (01.1--95.1)
+##' \item \code{INSEE_DEP} character (01--95)
+##' }
+##' @docType data
+##' @keywords datasets
+##' @name  ShapDep
+##' @usage data( ShapDep )
+##' @format A data frame with  2404  rows and  8  variables
+NULL
