@@ -46,9 +46,16 @@ CalibInc<-  function (mod, pred = NULL,
   nb.can_ <- vars[attr(terms(mod),"offset")]
   nb.bma_ <- vars[1]
 
+  covars<-
+    sapply(attr(terms(formula(mod)),"term.labels"),
+           function(tl)
+             all.vars(as.formula(paste0("~",tl)))[1])%>%
+    as.character
+  if(class(mod)[1] == "glmmPQL") covars<-c(covars,names(mod$groups))
+
   ag<-aggregate
   if (is.null(ag))
-    ag<-paste("~",paste(rev(setdiff(vars,c(nb.bma_,nb.can_))),collapse=":"))%>%as.formula
+    ag<-paste("~",paste(covars,collapse=":"))%>%as.formula
   else if(ag!=~1) ag<-paste("~",paste(all.vars(ag),collapse=":"))%>%as.formula
   if(ag!=~1) ag<-update(ag,~.-1)
 
@@ -59,7 +66,7 @@ CalibInc<-  function (mod, pred = NULL,
   if (class(pred)[1]=="try-error")
     stop("The GLMM data set has changed since evaluation. Specify a prediction dataset trough the pred argument.")
   pred<-pred%>%dplyr::tbl_df()%>%dplyr::ungroup()
-  if (any(is.na(match(c(all.vars(ag),setdiff(all.vars(nobars(formula(mod))),nb.can_)),names(pred)))))
+  if (any(is.na(match(c(all.vars(ag),covars,nb.bma_),names(pred)))))
     stop("Variables specified in aggregate or in the model are missing from the pred table.")
   if(ag!=~1)
     pred<-pred%>%dplyr::arrange_(all.vars(ag))
