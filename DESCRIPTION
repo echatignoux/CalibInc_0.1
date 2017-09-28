@@ -1,12 +1,12 @@
 Package: CalibInc
-Title: Prediction of incidence using calibration model and proxy of incidence 
+Title: Prediction of incidence using calibration model and proxy of incidence
 Version: 0.1
 Authors@R: c(person("Edouard", "Chatignoux", email = "edouard.chatignoux@santepubliquefrance.fr",
                   role = c("aut", "cre")),
             person("Zoé", "Uhry", role = c("ctb")),
 	    person("Laurent", "Remontet", role = c("ctb")))
-Author: Edouard Chatignoux [aut,cre], Zoé Uhry [aut, ctb], Laurent Remontet [aut, ctb]
-Maintainer: Edouard Chatignoux <edouard.chatignoux@santepubliquefrance.fr> 
+Author: Edouard Chatignoux [aut,cre], Zoé Uhry [aut, ctb], Laurent Remontet [aut, ctb], Marc Colonna [aut, ctb]
+Maintainer: Edouard Chatignoux <edouard.chatignoux@santepubliquefrance.fr>
 Description: The package provides fonctions to predict incidence from proxy data using a calibration approach
 Depends:
     R (>= 3.3.3)

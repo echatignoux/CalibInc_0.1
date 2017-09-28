@@ -3,21 +3,25 @@
 \docType{data}
 \name{lopm.CalibSet}
 \alias{lopm.CalibSet}
-\title{Data on LOP cancer in men over the 2007-2011 period for the 14 districts covered by a
-cancer registry.}
-\format{A data frame with  182  rows and  5  variables}
-\usage{
-data( lopm.CalibSet )
-}
-\details{
+\title{LOP cancer in men for districts covered by a cancer registry.}
+\format{A data frame with  182  rows and  5  variables
 \itemize{
 \item \code{dist} District
 \item \code{age} Central age of the age class
 \item \code{C} Number of cancer incident cases
 \item \code{H} Number of hospitalizations
 \item \code{py} Number of person-years
+}}
+\usage{
+data( lopm.CalibSet )
 }
-
+\description{
+Data on LOP cancer in men over the 2007-2011 period for the 14 districts covered by a
+cancer registry.
+}
+\details{
+The number of cancer incident cases were provided
+by the network of French cancer registries FRANCIM.
 The number of cancer incident cases,
 corresponding numbers of hospitalizations and person-years
 are tabulated by 5 years age groups (from 0-5 to 90+,

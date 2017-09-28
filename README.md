@@ -1,7 +1,7 @@
 CalibInc
 ========
 
-Code and material for the article "For a sound use of big data in epidemiology: evaluation of a calibration model for count data with application to prediction of cancer incidence in areas without cancer registry."
+Code and material for the article *"For a sound use of big data in epidemiology: evaluation of a calibration model for count data with application to prediction of cancer incidence in areas without cancer registry."*
 
 R-package
 ---------
@@ -22,4 +22,8 @@ library(CalibInc)
 Analysis from the application section of the paper
 --------------------------------------------------
 
-The use of `CalibInc` package is illustrated with the code used in the application section of the paper to predict cancer incidence for LOP cancer in men using registry and hospitalization data. The code and results are available at <https://cdn.rawgit.com/echatignoux/CalibInc/8b59aea8/Application/Application.html>.
+The use of `CalibInc` package is illustrated with the code used in the
+application section of the paper. It illustrates how to predict cancer
+incidence for LOP cancer in men using registry and hospitalization
+data. Code and results are available at
+<https://cdn.rawgit.com/echatignoux/CalibInc/8b59aea8/Application/Application.html>.

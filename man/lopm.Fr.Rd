@@ -3,20 +3,21 @@
 \docType{data}
 \name{lopm.Fr}
 \alias{lopm.Fr}
-\title{Data on hospitalisation for LOP cancer in men over the 2007-2011 period for the 96 French
-adminsitrative districts}
-\format{A data frame with  1728  rows and  5  variables}
-\usage{
-data( lopm.Fr )
-}
-\description{
+\title{LOP cancer in men for French districts.}
+\format{A data frame with  1728  rows and  5  variables
 \itemize{
 \item \code{dist} District
 \item \code{age} Central age of the age class
 \item \code{H} Number of hospitalizations
 \item \code{py} Number of person-years
 \item \code{WSP} World Standard Population (Segi 1960 standard)
+}}
+\usage{
+data( lopm.Fr )
 }
+\description{
+Data on hospitalisation for LOP cancer in men over the 2007-2011 period for the 96 French
+administrative districts.
 }
 \details{
 The number of hospitalizations and person-years

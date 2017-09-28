@@ -2,7 +2,7 @@
 title: Use of a calibration model for count data to predict cancer incidence in areas without cancer registry
 subtitle: Prediction of cancer incidence using cancer registry and hospitalization data
 author:
-date:
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     fig_width: 10
@@ -17,7 +17,7 @@ output:
 In this document, we illustrate the main features of the `CalibInc` R
 package through the example of estimating LOP cancer incidence in men
 for the 96 French metropolitan districts over the 2007-2011
-period. The predictions is made using registry incidence data from 14
+period. The predictions are made using registry incidence data from 14
 districts and hospitalization data for all the districts.
 This exemple served as an illustrattion of the method in the article
 *"For a sound use of big data in epidemiology: evaluation of a
@@ -56,6 +56,7 @@ classes with no cancer, the number of incident cases in lower ages
 classes were aggregated.
 
 ```{r,echo=T}
+library(tidyverse)
 data(lopm.CalibSet)
 lopm.CalibSet
 ```
@@ -64,7 +65,8 @@ The dataset `lopm.Fr` comprise hospitalization data for LOP cancer in
 men in all French district over the 2007-2011 period. The data are
 tabulated by 5 years age groups (from 0-5 to 90+, variable `age`
 corresponds to the central age of the class) and district (variable
-`dist`). The variable `py` corresponds to the number of person years.
+`dist`). The variable `py` corresponds to the number of person years
+and `WSP` stands for the World Standard Population of 1960 (Segi standard).
 
 ```{r,echo=T}
 data(lopm.Fr)
@@ -72,14 +74,14 @@ lopm.Fr
 ```
 
 The numbers of cancer and hospitalizations in both
-`lopm.CalibSet` and `lopm.Fr` datasets were slightly disturbed to
-comply with diffusion constrains.
+`lopm.CalibSet` and `lopm.Fr` datasets were slightly disturbed in
+order to comply with diffusion constrains.
 
 ## Evaluation of the calibration model ##
 ### Estimation of model parameters ###
 
 In the calibration model (2.1), the mean H/C ratio (exp(f)) is modelled with a
-restricted cubic spline with one knot at the median age (median over all
+restricted cubic spline with one knot at the median age (median over incident
 cases) and boundary knots placed at 5 years above and below the minimum and maximum age
 respectively (over all cases).
 
@@ -188,7 +190,7 @@ exp.dist.lopm<-lopm.Fr%>%
   summarise(E=sum(pred*py))
 ```
 
-#### 3. Calculate the SIR and add prediction intervals ####
+#### 3. Calculate the SIR and add prediction intervals thanks to `LogNormPI` function####
 ```{r,echo=T}
 SIR<-pred.dist.lopm%>%left_join(exp.dist.lopm)%>%
   mutate(SIR=pred/E,se.SIR=se/E)%>%
@@ -232,13 +234,15 @@ be seen in the caterpillar graph below. In this graph, the districts
 are ordered by increasing SIR values and bars represent 95% PI.
 
 ```{r,echo=T}
-SIR.compare%>%arrange(SIR)%>%group_by(method)%>%
-  mutate(id=row_number()-0.4*(method=="glmer"))%>%
-  qplot(data=.,id,SIR,colour=method)+geom_pointrange(aes(ymin=low,ymax=up))+
+SIR.compare<-SIR%>%mutate(Method="glmer")%>%
+  bind_rows(SIR.PQL%>%mutate(Method="glmmPQL"))
+SIR.compare%>%arrange(SIR)%>%group_by(Method)%>%
+  mutate(id=row_number()-0.4*(Method=="glmer"))%>%
+  qplot(data=.,id,SIR,colour=Method)+geom_pointrange(aes(ymin=low,ymax=up))+
   xlab("Districts")+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
 ```
 
-Small differences were expected here as dispersion was low. However,
+Only small differences were expected here as dispersion was low. However,
 in case of marked dispersion, the use of `glmmPQL` is recommended.
 
 ### Ex.: prediction of ASR ###

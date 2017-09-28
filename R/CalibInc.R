@@ -22,6 +22,7 @@
 ##' @examples
 ##' library(lme4)
 ##' library(splines)
+##' library(tidyverse)
 ##' data(lopm.CalibSet)
 ##' data(lopm.Fr)
 ##' ## Run the calibration model for lop cancer incidence
@@ -101,7 +102,7 @@ CalibInc<-  function (mod, pred = NULL,
   nbbma <- pred[,nb.bma_][[1]]%>% as.vector
 
   f <- function(x) factor(x, levels = unique(x))
-  Xag<-pred%>%dplyr::mutate_each_(funs(f),all.vars(ag))
+  Xag<-pred%>%dplyr::mutate_at(all.vars(ag),funs(f))
   Xag <- model.matrix(ag, data = droplevels(Xag))
   Xag <- Xag[,colSums(Xag)!=0]
   Xag <- t(Xag) %*% Matrix::Diagonal(x = as.vector(W))
@@ -148,6 +149,5 @@ LogNormPI<-function(data,pred=pred,se=se,level=.95){
                 low=pred_*sqrt(cv^2+1)*exp(-z*sqrt(log(cv^2+1))),
                 up=pred_*sqrt(cv^2+1)*exp(+z*sqrt(log(cv^2+1))))%>%
     dplyr::select(-cv,-pred_,-se_)}
-
 
 

@@ -36,6 +36,7 @@ arguments and returns a table with predictions and standard errors
 \examples{
 library(lme4)
 library(splines)
+library(tidyverse)
 data(lopm.CalibSet)
 data(lopm.Fr)
 ## Run the calibration model for lop cancer incidence

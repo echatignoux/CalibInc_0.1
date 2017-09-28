@@ -1,7 +1,7 @@
 unnamed-chunk-1	
 unnamed-chunk-2	
-unnamed-chunk-3	lopm.CalibSet
-unnamed-chunk-4	lopm.Fr
+unnamed-chunk-3	
+unnamed-chunk-4	
 unnamed-chunk-5	form.calib	k
 unnamed-chunk-6	mod.calib
 unnamed-chunk-7	age
@@ -13,7 +13,6 @@ unnamed-chunk-12	exp.dist.lopm
 unnamed-chunk-13	SIR
 unnamed-chunk-14	
 unnamed-chunk-15	SIR.PQL
-unnamed-chunk-16	
+unnamed-chunk-16	SIR.compare
 unnamed-chunk-17	ASR.dist	lopm.Fr
 unnamed-chunk-18	ASR.fr	lopm.Fr
-unnamed-chunk-19	ASR.fr	lopm.Fr
