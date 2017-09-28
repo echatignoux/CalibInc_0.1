@@ -26,4 +26,4 @@ The use of `CalibInc` package is illustrated with the code used in the
 application section of the paper. It illustrates how to predict cancer
 incidence for LOP cancer in men using registry and hospitalization
 data. Code and results are available at
-<https://cdn.rawgit.com/echatignoux/CalibInc/8b59aea8/Application/Application.html>.
+<https://rawgit.com/echatignoux/CalibInc/master/Application/Application.html>.
