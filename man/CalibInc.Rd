@@ -38,7 +38,7 @@ library(lme4)
 library(splines)
 library(tidyverse)
 data(lopm.CalibSet)
-data(lopm.Fr)
+data(lopm.alldist)
 ## Run the calibration model for lop cancer incidence
 ## and hospitalisation data in men, 2007-2011
 k<-Hmisc::wtd.quantile(lopm.CalibSet$age,weights=lopm.CalibSet$C,p=0.5)\%>\%as.numeric
@@ -48,9 +48,9 @@ form.calib<-substitute(H~offset(log(C))+
                        list(k=k))\%>\%as.formula
 mod.calib<-glmer(form.calib,data=lopm.CalibSet\%>\%filter(C>0),family="poisson", nAGQ =20)
 ## Predict the total number of incident cases by district
-CalibInc(mod.calib,pred=lopm.Fr,aggregate=~dist)
+CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist)
 ## Predict the total number of incident cases by age and district
-CalibInc(mod.calib,pred=lopm.Fr,aggregate=~dist+age)
+CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist+age)
 }
 \author{
 Edouard Chatignoux

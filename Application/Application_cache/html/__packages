@@ -11,8 +11,12 @@ magrittr
 knitr
 devtools
 httr
-rmarkdown
 CalibInc
+rmarkdown
+lattice
+survival
+Formula
+Hmisc
 Matrix
 lme4
 bindrcpp

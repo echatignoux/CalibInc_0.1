@@ -54,8 +54,8 @@ or categorial scale, and to hatch non significant areas.
 \examples{
 ## Represent crude hospitalisation rate in France by district for LP cancer in men, 2007-2011
 library(tidyverse)
-data(lopm.Fr)
-crude.rate<-lopm.Fr\%>\%group_by(dist)\%>\%summarise(rate=100000*sum(H)/sum(py))\%>\%mutate(id=dist)
+data(lopm.alldist)
+crude.rate<-lopm.alldist\%>\%group_by(dist)\%>\%summarise(rate=100000*sum(H)/sum(py))\%>\%mutate(id=dist)
 ggMap(var=rate,data=crude.rate,color= "YlOrRd",legend=list(title="Hosp. rate\\nfor 100 000"))+
 ggtitle("Crude hospitalisation rate for LOP, men, 2007-2011")
 }

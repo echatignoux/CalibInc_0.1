@@ -19,16 +19,24 @@ package through the example of estimating LOP cancer incidence in men
 for the 96 French metropolitan districts over the 2007-2011
 period. The predictions are made using registry incidence data from 14
 districts and hospitalization data for all the districts.
-This exemple served as an illustrattion of the method in the article
+This exemple served as an illustration of the method in the article
 *"For a sound use of big data in epidemiology: evaluation of a
 calibration model for count data with application to prediction of
 cancer incidence in areas without cancer registry"*.
+
+> **WARNING**
+>
+> *In order to comply with diffusion constrains,*
+> *the numbers of cancer and hospitalizations in the datasets*
+> *were slightly altered, while keeping the same value and district*
+> *variability of the H/C ratio, as in the real data.*
+
 
 Installing CalibInc
 ====================
 
 Use [devtools](https://github.com/hadley/devtools) to install the
-latest version of `CalibInc` from Github:
+latest version of `CalibInc` from Github (may take time):
 
 ```{r,echo=T,eval=F}
 require(devtools)
@@ -42,6 +50,15 @@ library(CalibInc)
 
 Using CalibInc
 ==============
+The use of `CalibInc` package is illustrated through the example of
+the prediction of LOP cancer incidence in men.
+The code can also be applied to the (altered) datasets for NHL
+cancer incidence in women (datasets `mhlw.CalibSet` and
+`mhlw.alldist`) which has significant variability in the H/C ratio.
+
+*Note*: In addition to `CalibInc`, the following code needs the
+`Hmisc`, `lme4` and `gridExtra` packages to be installed.
+
 
 ## Cancer incidence and hospitalization data sets ##
 
@@ -50,10 +67,10 @@ men over the 2007-2011 period for the 14 districts covered by a
 cancer registry. The number of cancer incident cases (variable `C`)
 and corresponding numbers of hospitalizations (variable `H`) for LOP
 cancer in men are tabulated by 5 years age groups (from 0-5 to 90+,
-variable `age` corresponds to the central age of the class) and
+variable `age` corresponds to the central age of each age group) and
 district (variable `dist`). In order to diminish the number of age
-classes with no cancer, the number of incident cases in lower ages
-classes were aggregated.
+groups with no cancer, the number of incident cases in lower ages
+groups were aggregated.
 
 ```{r,echo=T}
 library(tidyverse)
@@ -61,21 +78,18 @@ data(lopm.CalibSet)
 lopm.CalibSet
 ```
 
-The dataset `lopm.Fr` comprise hospitalization data for LOP cancer in
+The dataset `lopm.alldist` comprise hospitalization data for LOP cancer in
 men in all French district over the 2007-2011 period. The data are
 tabulated by 5 years age groups (from 0-5 to 90+, variable `age`
-corresponds to the central age of the class) and district (variable
+corresponds to the central age of the age group) and district (variable
 `dist`). The variable `py` corresponds to the number of person years
 and `WSP` stands for the World Standard Population of 1960 (Segi standard).
 
 ```{r,echo=T}
-data(lopm.Fr)
-lopm.Fr
+data(lopm.alldist)
+lopm.alldist
 ```
 
-The numbers of cancer and hospitalizations in both
-`lopm.CalibSet` and `lopm.Fr` datasets were slightly disturbed in
-order to comply with diffusion constrains.
 
 ## Evaluation of the calibration model ##
 ### Estimation of model parameters ###
@@ -87,11 +101,13 @@ respectively (over all cases).
 
 ```{r,echo=T}
 library(splines)
-k<-Hmisc::wtd.quantile(lopm.CalibSet$age,weights=lopm.CalibSet$C,p=0.5)%>%as.numeric
+library(Hmisc)## Used to calculate weighted quantiles
+k<-wtd.quantile(lopm.CalibSet$age,weights=lopm.CalibSet$C,p=0.5)%>%as.numeric
 form.calib<-substitute(H~offset(log(C))+
                          ns(age,knots=k, Boundary.knots = range(age)+c(5,-5))+
                          (1|dist),
-                       list(k=k))%>%as.formula
+                       list(k=k))
+form.calib<-as.formula(form.calib)
 ```
 
 The model can be evaluated with the `glmer`function from the `lme4`
@@ -99,14 +115,17 @@ package:
 ```{r,echo=T}
 library(lme4)
 mod.calib<-glmer(form.calib,data=lopm.CalibSet%>%filter(C>0),family="poisson", nAGQ =20)
+summary(mod.calib)
 ```
-
 We can have a quick look at the mean H/C ratio:
 ```{r,echo=T}
-age<-lopm.CalibSet$age%>%unique
-qplot(age,
-      predict(mod.calib,newdata=data_frame(C=1,H=1,age=age),re.form=NA,type="response"),
-      geom="line")+xlab("Age")+ylab("Mean H/C ratio")
+age<-unique(lopm.CalibSet$age)
+dtMeanHC<-data_frame(C=1,H=1,age=age)
+## Predict H/C mean relation (i.e. predictions response with no random effects)
+dtMeanHC$pred<-predict(mod.calib,newdata=dtMeanHC,re.form=NA,type="response")
+## Display in a graph
+qplot(data=dtMeanHC,age,pred,geom="line")+xlab("Age")+ylab("Mean H/C ratio")
+
 ```
 The ratio has a U shape and is always greater that one (more hospitalisations than incident
 cases).
@@ -115,13 +134,21 @@ cases).
 ### Model diagnostics ###
 
 Traditional diagnostic plots may be used to check the consistency
-between the model and the data.
+between the model and the data. Note that residuals and fitted values
+includes eventual random effects.
 
 ```{r,echo=T}
-diag.mod<-lopm.CalibSet%>%filter(C>0)%>%
-  mutate(res=residuals(mod.calib,type="deviance"),fit=predict(mod.calib),
-         y=qqnorm(res,plot=F)$x)
+## Build table with deviance residuals conditional on random effects and fitted values
+diag.mod<-lopm.CalibSet%>%filter(C>0)
+diag.mod<-mutate(diag.mod,
+                 res=residuals(mod.calib,type="deviance"),
+                 fit=predict(mod.calib,type="link"),
+                 y=qqnorm(res,plot=F)$x)
+## Bissectrice line
 bis<-geom_abline(intercept=0,slope=1)
+
+## Display traditionnal diagnotics plots in a 2x2 layout
+library(gridExtra)
 grid.arrange(
   qplot(data=diag.mod,y,res)+bis+xlab("Theoretical Quantiles")+ylab("Sample Quantiles")+bis+
     ggtitle("Normal Q-Q plot"),
@@ -145,71 +172,166 @@ mod.calibPQL$sigma
 The PQL estimation confirms a small under-dispersion in the data.
 
 
-## Prediction of incidence in all French districts ##
+# Prediction of incidence #
 
 Once the calibration model fit, predictions are done with the
 `CalibInc` function. This function takes the calibration model as an
 argument (`mod`) and requires a prediction table `pred` containing
 the proxy of incidence (hospitalisation data in this application) and
-the other variables used in the calibration model (only `age` in this
-application). `CalibInc` has an other `weight` argument used to weight
+the other variables used in the calibration model (only `age` and
+`dist` in this application). `CalibInc` has a  `weight` argument used to weight
 row predictions, and an `aggregate` argument used to aggregate the
 predictions according to a combination of variables given as a formula
 (see below).
 
+The output is a `data_frame` with predicted incidence `pred` and
+associated standard error `se`.
 
-### Ex.: prediction of SIR ###
+## Number of incident cases, crude and standardized rates ##
+
+
+### 1. By age and district ###
+
+Total number of incident cancer cases by age and district over the
+2007-2011 period is predicted with:
+
+```{r,echo=T}
+pred.dist.age.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist+age)
+pred.dist.age.lopm
+
+```
+
+Specific age-incidence rates by districts are obtained using the
+`weight` argument, with weights equal to the inverse of the
+number of person year by age in the district (times 100,000):
+
+```{r,echo=T}
+cr.dist.age.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist+age,
+                           w=100000/lopm.alldist$py)
+cr.dist.age.lopm
+
+```
+
+### 2. By district ###
+
+Total number of incident cancer cases  by district over the
+2007-2011 period is predicted with:
+
+```{r,echo=T}
+pred.dist.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist)
+pred.dist.lopm
+
+```
+
+Crude incidence rates by districts are obtained using the
+`weight` argument, with weights corresponding to the inverse of the
+number of person year in the district (times 100,000):
+
+```{r,echo=T}
+lopm.alldist<-group_by(lopm.alldist,dist)
+lopm.alldist<-mutate(lopm.alldist,w.cr=100000/sum(py))
+cr.dist.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist,w=w.cr)
+cr.dist.lopm
+```
+
+Similarly, age standardized rate by district can be obtained by using
+a weight corresponding to the ratio between standard population figures
+and the number of person year by age and district:
+
+```{r,echo=T}
+lopm.alldist$w.asr<-lopm.alldist$WSP/lopm.alldist$py
+asr.dist.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist,w=w.asr)
+asr.dist.lopm
+```
+
+### 3. For whole territory ###
+
+The total number of incident for cases over 2007-2011 for France as a
+whole is predicted with:
+
+```{r,echo=T}
+pred.fr.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~1)
+pred.fr.lopm
+
+```
+
+and crude incidence rates obtained using the
+`weight` argument, with individual weights corresponding to the inverse of the
+total number of person year (times 100,000):
+
+```{r,echo=T}
+lopm.alldist$w.cr.fr<-100000*1/sum(lopm.alldist$py)
+cr.fr.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~1,w=w.cr.fr)
+cr.fr.lopm
+```
+
+Finally, age standardized rate for France are obtained by using
+a weight corresponding to the ratio between standardized population
+and the number of person year by age:
+
+```{r,echo=T}
+lopm.alldist<-group_by(lopm.alldist,age)
+lopm.alldist<-mutate(lopm.alldist,w.asr.fr=WSP/sum(py))
+asr.fr.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~1,w=w.asr.fr)
+asr.fr.lopm
+
+```
+
+
+## Prediction of SIR ##
 
 The following code provides example of how to use `CalibInc` to
 calculate SIR in each French districts.
 
-#### 1. Predict incident cases and se by district ####
+### 1. Calculate expected incidence by district ###
+
+The expected number of cases in a district is calculated as the sum of
+age-incidence rate for France times the total district's person years.
 
 ```{r,echo=T}
-pred.dist.lopm<-CalibInc(mod.calib,pred=lopm.Fr,aggregate=~dist)
-pred.dist.lopm
-```
-
-#### 2. Calculate expected incidence by district ####
-
-1. Incidence rate by age is equal to the weighted sum of the predicted number
-	of cases by age with weight equal to the inverse of the total PY for the age group
-
-```{r,echo=T}
-lopm.Fr<-lopm.Fr%>%group_by(age)%>%mutate(w=1/sum(py))
-rate.age.lopm<-CalibInc(mod.calib,pred=lopm.Fr,weight=w,aggregate=~age)
-```
-
-2. Expected counts are then the sum of age incidence rate times the
-   district's person years
-
-```{r,echo=T}
-exp.dist.lopm<-lopm.Fr%>%
-  left_join(rate.age.lopm%>%select(-H,-se))%>%
-  group_by(dist)%>%
-  summarise(E=sum(pred*py))
-```
-
-#### 3. Calculate the SIR and add prediction intervals thanks to `LogNormPI` function####
-```{r,echo=T}
-SIR<-pred.dist.lopm%>%left_join(exp.dist.lopm)%>%
-  mutate(SIR=pred/E,se.SIR=se/E)%>%
-  LogNormPI(pred=SIR,se=se.SIR)
+## Calculate french age-incidence rate with weight equal to
+## the inverse of total number of person-years for the age group
+lopm.alldist<-group_by(lopm.alldist,age)
+lopm.alldist<-mutate(lopm.alldist,w.cr.fr.age=1/sum(py))
+cr.fr.age.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~age,w=w.cr.fr.age)
+## Add the rate to individual table
+cr.fr.age.lopm<-select(cr.fr.age.lopm,age,pred)
+cr.fr.age.lopm<-rename(cr.fr.age.lopm,ar=pred)
+lopm.alldist<-left_join(lopm.alldist,cr.fr.age.lopm,by="age")
+## Sum by district
+SIR<-group_by(lopm.alldist,dist)
+SIR<-summarise(SIR,E=sum(py*ar))
 SIR
 ```
 
-#### 4. Represent the predicted SIR on a map ####
+### 2. Add predicted number of incident cases by districts and standard errors ###
+
+```{r,echo=T}
+SIR<-left_join(SIR,pred.dist.lopm)
+SIR
+```
+
+### 3. Calculate the SIR and add prediction intervals thanks to
+`LogNormPI` function ###
+```{r,echo=T}
+SIR<-mutate(SIR,SIR=pred/E,se.SIR=se/E)
+SIR<-LogNormPI(SIR,pred=SIR,se=se.SIR)
+SIR
+```
+
+### 4. Represent the predicted SIR on a map ###
 
 The `ggMap` function can be use to represent the predicted SIR on a map:
 ```{r,echo=T}
-ggMap(data=SIR%>%mutate(id=dist,NS=!(low>1|up<1)),
+SIR<-mutate(SIR,id=dist,NS=!(low>1|up<1))
+ggMap(data=SIR,
       SIR,color= "RdYlGn",rev=T,ns=NS,limits=c(0.7,1.3))+
   ggtitle("SIR for LOP cancer incidence in men, 2007-2011")
 
 
 ```
 
-#### Comparison with PQL estimates ####
+## Comparison with PQL estimates ##
 
 As we saw, slight under-dispersion is present in the data. We can
 account for the under-dispersion when calculating the variances of the
@@ -217,15 +339,22 @@ prediction by using the `glmmPQL` fit in the `mod` argument of
 `CalibInc`.
 
 ```{r,echo=T}
-SIR.PQL<-
-  CalibInc(mod=mod.calibPQL,pred=lopm.Fr,aggregate=~dist)%>%
-  left_join(
-    lopm.Fr%>%
-      left_join(CalibInc(mod.calibPQL,pred=lopm.Fr,weight=w,aggregate=~age)%>%select(-H,-se))%>%
-      group_by(dist)%>%
-      summarise(E=sum(pred*py)))%>%
-  mutate(O=pred,SIR=pred/E,se.SIR=se/E)%>%
-  LogNormPI(pred=SIR,se=se.SIR)
+## Calculate french age-incidence rate
+cr.fr.age.lopm.PQL<-CalibInc(mod.calibPQL,pred=lopm.alldist,aggregate=~age,w=w.cr.fr.age)
+cr.fr.age.lopm.PQL<-select(cr.fr.age.lopm.PQL,age,pred)
+cr.fr.age.lopm.PQL<-rename(cr.fr.age.lopm.PQL,ar.PQL=pred)
+## Add the rate to individual table
+lopm.alldist<-left_join(lopm.alldist,cr.fr.age.lopm.PQL,by="age")
+## Sum by district to get expected counts
+SIR.PQL<-group_by(lopm.alldist,dist)
+SIR.PQL<-summarise(SIR.PQL,E=sum(py*ar.PQL))
+## Add predicted number of incident cases by districts and standard errors
+pred.dist.lopm.PQL<-CalibInc(mod.calibPQL,pred=lopm.alldist,aggregate=~dist)
+SIR.PQL<-left_join(SIR.PQL,pred.dist.lopm.PQL)
+## Calculte SIR and prediction intervals
+SIR.PQL<-mutate(SIR.PQL,SIR=pred/E,se.SIR=se/E)
+SIR.PQL<-LogNormPI(SIR.PQL,pred=SIR,se=se.SIR)
+SIR.PQL
 ```
 
 The resulting predictions and standard errors are very close to the
@@ -234,35 +363,22 @@ be seen in the caterpillar graph below. In this graph, the districts
 are ordered by increasing SIR values and bars represent 95% PI.
 
 ```{r,echo=T}
-SIR.compare<-SIR%>%mutate(Method="glmer")%>%
-  bind_rows(SIR.PQL%>%mutate(Method="glmmPQL"))
-SIR.compare%>%arrange(SIR)%>%group_by(Method)%>%
-  mutate(id=row_number()-0.4*(Method=="glmer"))%>%
-  qplot(data=.,id,SIR,colour=Method)+geom_pointrange(aes(ymin=low,ymax=up))+
+## Regroup glmer and glmmPQL predicted incidence
+SIR.compare<-bind_rows(
+  mutate(SIR,Method="glmer"),
+  mutate(SIR.PQL,Method="glmmPQL"))
+## Arrange districts by increasing SIR
+SIR<-arrange(SIR,SIR)
+SIR$rank<-1:nrow(SIR)
+SIR.compare<-left_join(SIR.compare,select(SIR,dist,rank))
+SIR.compare<-mutate(SIR.compare,rank=rank-0.4*(Method=="glmer"))
+## Plot
+qplot(data=SIR.compare,rank,SIR,colour=Method)+geom_pointrange(aes(ymin=low,ymax=up))+
   xlab("Districts")+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())
 ```
 
 Only small differences were expected here as dispersion was low. However,
 in case of marked dispersion, the use of `glmmPQL` is recommended.
-
-### Ex.: prediction of ASR ###
-
-Similarly, age-standardized rates can be predicted by using the
-appropriate weights:
-
-1. By districts
-```{r,echo=T}
-lopm.Fr<-lopm.Fr%>%mutate(w=WSP/py)
-(ASR.dist<-CalibInc(mod.calib,pred=lopm.Fr,weight=w,aggregate=~dist)%>%
-   LogNormPI)
-```
-
-1. For France
-```{r,echo=T}
-lopm.Fr<-lopm.Fr%>%group_by(age)%>%mutate(w=WSP/sum(py))
-(ASR.fr<-CalibInc(mod.calib,pred=lopm.Fr,weight=w,aggregate=~1)%>%
-  LogNormPI)
-```
 
 
 

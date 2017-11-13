@@ -19,6 +19,8 @@ After installation, the package can be loaded into R.
 library(CalibInc)
 ```
 
+The package needs R version 3.1.2 or higher.
+
 Analysis from the application section of the paper
 --------------------------------------------------
 

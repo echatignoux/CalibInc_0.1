@@ -1,18 +1,23 @@
 unnamed-chunk-1	require	devtools	install_github
 unnamed-chunk-2	library	CalibInc
 unnamed-chunk-3	library	tidyverse	data	lopm.CalibSet
-unnamed-chunk-4	data	lopm.Fr
-unnamed-chunk-5	library	splines	k	wtd.quantile	lopm.CalibSet	age	C	%>%	as.numeric	form.calib	substitute	H	offset	log	ns	range	c	dist	list	as.formula
-unnamed-chunk-6	library	lme4	mod.calib	glmer	form.calib	lopm.CalibSet	%>%	filter	C
-unnamed-chunk-7	age	lopm.CalibSet	%>%	unique	qplot	predict	mod.calib	data_frame	xlab	ylab
-unnamed-chunk-8	diag.mod	lopm.CalibSet	%>%	filter	C	mutate	residuals	mod.calib	predict	qqnorm	res	F	x	bis	geom_abline	grid.arrange	qplot	y	xlab	ylab	ggtitle	fit	I	exp	H
+unnamed-chunk-4	data	lopm.alldist
+unnamed-chunk-5	library	splines	Hmisc	k	wtd.quantile	lopm.CalibSet	age	C	%>%	as.numeric	form.calib	substitute	H	offset	log	ns	range	c	dist	list	as.formula
+unnamed-chunk-6	library	lme4	mod.calib	glmer	form.calib	lopm.CalibSet	%>%	filter	C	summary
+unnamed-chunk-7	age	unique	lopm.CalibSet	dtMeanHC	data_frame	pred	predict	mod.calib	qplot	xlab	ylab
+unnamed-chunk-8	diag.mod	lopm.CalibSet	%>%	filter	C	mutate	residuals	mod.calib	predict	qqnorm	res	F	x	bis	geom_abline	library	gridExtra	grid.arrange	qplot	y	xlab	ylab	ggtitle	fit	I	exp	H
 unnamed-chunk-9	mod.calibPQL	glmmPQL	nobars	form.calib	dist	lopm.CalibSet	%>%	filter	C	sigma
-unnamed-chunk-10	pred.dist.lopm	CalibInc	mod.calib	lopm.Fr	dist
-unnamed-chunk-11	lopm.Fr	%>%	group_by	age	mutate	sum	py	rate.age.lopm	CalibInc	mod.calib	w
-unnamed-chunk-12	exp.dist.lopm	lopm.Fr	%>%	left_join	rate.age.lopm	select	H	se	group_by	dist	summarise	sum	pred	py
-unnamed-chunk-13	SIR	pred.dist.lopm	%>%	left_join	exp.dist.lopm	mutate	pred	E	se	LogNormPI	se.SIR
-unnamed-chunk-14	ggMap	SIR	%>%	mutate	dist	low	up	T	NS	c	ggtitle
-unnamed-chunk-15	SIR.PQL	CalibInc	mod.calibPQL	lopm.Fr	dist	%>%	left_join	w	age	select	H	se	group_by	summarise	sum	pred	py	mutate	E	LogNormPI	SIR	se.SIR
-unnamed-chunk-16	SIR.compare	SIR	%>%	mutate	bind_rows	SIR.PQL	arrange	group_by	Method	row_number	qplot	.	id	geom_pointrange	aes	low	up	xlab	theme	element_blank
-unnamed-chunk-17	lopm.Fr	%>%	mutate	WSP	py	ASR.dist	CalibInc	mod.calib	w	dist	LogNormPI
-unnamed-chunk-18	lopm.Fr	%>%	group_by	age	mutate	WSP	sum	py	ASR.fr	CalibInc	mod.calib	w	LogNormPI
+unnamed-chunk-10	pred.dist.age.lopm	CalibInc	mod.calib	lopm.alldist	dist	age
+unnamed-chunk-11	cr.dist.age.lopm	CalibInc	mod.calib	lopm.alldist	dist	age	py
+unnamed-chunk-12	pred.dist.lopm	CalibInc	mod.calib	lopm.alldist	dist
+unnamed-chunk-13	lopm.alldist	group_by	dist	mutate	sum	py	cr.dist.lopm	CalibInc	mod.calib	w.cr
+unnamed-chunk-14	lopm.alldist	w.asr	WSP	py	asr.dist.lopm	CalibInc	mod.calib	dist
+unnamed-chunk-15	pred.fr.lopm	CalibInc	mod.calib	lopm.alldist
+unnamed-chunk-16	lopm.alldist	w.cr.fr	sum	py	cr.fr.lopm	CalibInc	mod.calib
+unnamed-chunk-17	lopm.alldist	group_by	age	mutate	WSP	sum	py	asr.fr.lopm	CalibInc	mod.calib	w.asr.fr
+unnamed-chunk-18	lopm.alldist	group_by	age	mutate	sum	py	cr.fr.age.lopm	CalibInc	mod.calib	w.cr.fr.age	select	pred	rename	left_join	SIR	dist	summarise	ar
+unnamed-chunk-19	SIR	left_join	pred.dist.lopm
+unnamed-chunk-20	SIR	mutate	pred	E	se	LogNormPI	se.SIR
+unnamed-chunk-21	SIR	mutate	dist	low	up	ggMap	T	NS	c	ggtitle
+unnamed-chunk-22	cr.fr.age.lopm.PQL	CalibInc	mod.calibPQL	lopm.alldist	age	w.cr.fr.age	select	pred	rename	left_join	SIR.PQL	group_by	dist	summarise	sum	py	ar.PQL	pred.dist.lopm.PQL	mutate	E	se	LogNormPI	SIR	se.SIR
+unnamed-chunk-23	SIR.compare	bind_rows	mutate	SIR	SIR.PQL	arrange	rank	nrow	left_join	select	dist	Method	qplot	geom_pointrange	aes	low	up	xlab	theme	element_blank
