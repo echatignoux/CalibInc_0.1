@@ -166,7 +166,8 @@ estimating the GLMM model with a PQL routine (via the `glmmPQL` function
 from the `MASS` package):
 
 ```{r,echo=T}
-mod.calibPQL<-MASS::glmmPQL(nobars(form.calib),random=~1|dist,data=lopm.CalibSet%>%filter(C>0),family="poisson")
+mod.calibPQL<-MASS::glmmPQL(nobars(form.calib),random=~1|dist,
+                            data=lopm.CalibSet%>%filter(C>0),family="poisson")
 mod.calibPQL$sigma
 ```
 The PQL estimation confirms a small under-dispersion in the data.
@@ -244,7 +245,7 @@ asr.dist.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist,w=w.asr)
 asr.dist.lopm
 ```
 
-### 3. For whole territory ###
+### 3. For the whole territory ###
 
 The total number of incident for cases over 2007-2011 for France as a
 whole is predicted with:
@@ -311,8 +312,8 @@ SIR<-left_join(SIR,pred.dist.lopm)
 SIR
 ```
 
-### 3. Calculate the SIR and add prediction intervals thanks to
-`LogNormPI` function ###
+### 3. Calculate the SIR and add prediction intervals thanks to `LogNormPI` function ###
+
 ```{r,echo=T}
 SIR<-mutate(SIR,SIR=pred/E,se.SIR=se/E)
 SIR<-LogNormPI(SIR,pred=SIR,se=se.SIR)

@@ -11,8 +11,8 @@ magrittr
 knitr
 devtools
 httr
-CalibInc
 rmarkdown
+CalibInc
 lattice
 survival
 Formula
