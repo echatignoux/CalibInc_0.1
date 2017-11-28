@@ -216,7 +216,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Use of a calibration model for count data to predict cancer incidence in areas without cancer registry</h1>
 <h3 class="subtitle"><em>Prediction of cancer incidence using cancer registry and hospitalization data</em></h3>
-<h4 class="date"><em>13 novembre, 2017</em></h4>
+<h4 class="date"><em>28 novembre, 2017</em></h4>
 
 </div>
 
@@ -392,39 +392,39 @@ mod.calibPQL$sigma</code></pre>
 <div id="by-age-and-district" class="section level3">
 <h3>1. By age and district</h3>
 <p>Total number of incident cancer cases by age and district over the 2007-2011 period is predicted with:</p>
-<pre class="r"><code>pred.dist.age.lopm&lt;-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist+age)
+<pre class="r"><code>pred.dist.age.lopm&lt;-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~age+dist)
 pred.dist.age.lopm</code></pre>
 <pre><code>## # A tibble: 1,728 x 5
-##     dist   age     H      pred       se
-##    &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1    01   2.5     0 0.0000000 0.000000
-##  2    01   7.5     0 0.0000000 0.000000
-##  3    01  12.5     0 0.0000000 0.000000
-##  4    01  17.5     0 0.0000000 0.000000
-##  5    01  22.5     0 0.0000000 0.000000
-##  6    01  27.5     1 0.6893076 1.084944
-##  7    01  32.5     0 0.0000000 0.000000
-##  8    01  37.5     0 0.0000000 0.000000
-##  9    01  42.5     0 0.0000000 0.000000
-## 10    01  47.5     0 0.0000000 0.000000
+##      age  dist     H       pred       se
+##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;
+##  1   2.5    01     0  0.0000000 0.000000
+##  2   7.5    01     0  0.0000000 0.000000
+##  3  12.5    01     0  0.0000000 0.000000
+##  4  17.5    01     1  0.7725308 1.172716
+##  5  22.5    01     1  0.8008820 1.202696
+##  6  27.5    01     2  1.6569777 1.742605
+##  7  32.5    01     2  1.7091830 1.781634
+##  8  37.5    01     7  6.1485221 3.401189
+##  9  42.5    01    11  9.8880394 4.336435
+## 10  47.5    01    33 30.2061496 7.617809
 ## # ... with 1,718 more rows</code></pre>
 <p>Specific age-incidence rates by districts are obtained using the <code>weight</code> argument, with weights equal to the inverse of the number of person year by age in the district (times 100,000):</p>
-<pre class="r"><code>cr.dist.age.lopm&lt;-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist+age,
+<pre class="r"><code>cr.dist.age.lopm&lt;-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~age+dist,
                            w=100000/lopm.alldist$py)
 cr.dist.age.lopm</code></pre>
 <pre><code>## # A tibble: 1,728 x 5
-##     dist   age         H      pred        se
-##    &lt;chr&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-##  1    01   2.5 0.0000000 0.0000000 0.0000000
-##  2    01   7.5 0.0000000 0.0000000 0.0000000
-##  3    01  12.5 0.0000000 0.0000000 0.0000000
-##  4    01  17.5 0.0000000 0.0000000 0.0000000
-##  5    01  22.5 0.0000000 0.0000000 0.0000000
-##  6    01  27.5 0.7671065 0.5287723 0.8322676
-##  7    01  32.5 0.0000000 0.0000000 0.0000000
-##  8    01  37.5 0.0000000 0.0000000 0.0000000
-##  9    01  42.5 0.0000000 0.0000000 0.0000000
-## 10    01  47.5 0.0000000 0.0000000 0.0000000
+##      age  dist         H       pred       se
+##    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;
+##  1   2.5    01  0.000000  0.0000000 0.000000
+##  2   7.5    01  0.000000  0.0000000 0.000000
+##  3  12.5    01  0.000000  0.0000000 0.000000
+##  4  17.5    01  1.052332  0.8129592 1.234087
+##  5  22.5    01  1.217730  0.9752582 1.464559
+##  6  27.5    01  2.335876  1.9352469 2.035254
+##  7  32.5    01  2.176160  1.8597280 1.938561
+##  8  37.5    01  6.324082  5.5548227 3.072771
+##  9  42.5    01  9.481451  8.5229963 3.737790
+## 10  47.5    01 29.798992 27.2761460 6.878880
 ## # ... with 1,718 more rows</code></pre>
 </div>
 <div id="by-district" class="section level3">

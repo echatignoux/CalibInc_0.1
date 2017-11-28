@@ -197,7 +197,7 @@ Total number of incident cancer cases by age and district over the
 2007-2011 period is predicted with:
 
 ```{r,echo=T}
-pred.dist.age.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist+age)
+pred.dist.age.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~age+dist)
 pred.dist.age.lopm
 
 ```
@@ -207,7 +207,7 @@ Specific age-incidence rates by districts are obtained using the
 number of person year by age in the district (times 100,000):
 
 ```{r,echo=T}
-cr.dist.age.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~dist+age,
+cr.dist.age.lopm<-CalibInc(mod.calib,pred=lopm.alldist,aggregate=~age+dist,
                            w=100000/lopm.alldist$py)
 cr.dist.age.lopm
 

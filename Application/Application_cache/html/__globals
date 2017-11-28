@@ -7,8 +7,8 @@ unnamed-chunk-6	library	lme4	mod.calib	glmer	form.calib	lopm.CalibSet	%>%	filter
 unnamed-chunk-7	age	unique	lopm.CalibSet	dtMeanHC	data_frame	pred	predict	mod.calib	qplot	xlab	ylab
 unnamed-chunk-8	diag.mod	lopm.CalibSet	%>%	filter	C	mutate	residuals	mod.calib	predict	qqnorm	res	F	x	bis	geom_abline	library	gridExtra	grid.arrange	qplot	y	xlab	ylab	ggtitle	fit	I	exp	H
 unnamed-chunk-9	mod.calibPQL	glmmPQL	nobars	form.calib	dist	lopm.CalibSet	%>%	filter	C	sigma
-unnamed-chunk-10	pred.dist.age.lopm	CalibInc	mod.calib	lopm.alldist	dist	age
-unnamed-chunk-11	cr.dist.age.lopm	CalibInc	mod.calib	lopm.alldist	dist	age	py
+unnamed-chunk-10	pred.dist.age.lopm	CalibInc	mod.calib	lopm.alldist	age	dist
+unnamed-chunk-11	cr.dist.age.lopm	CalibInc	mod.calib	lopm.alldist	age	dist	py
 unnamed-chunk-12	pred.dist.lopm	CalibInc	mod.calib	lopm.alldist	dist
 unnamed-chunk-13	lopm.alldist	group_by	dist	mutate	sum	py	cr.dist.lopm	CalibInc	mod.calib	w.cr
 unnamed-chunk-14	lopm.alldist	w.asr	WSP	py	asr.dist.lopm	CalibInc	mod.calib	dist
