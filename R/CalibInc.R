@@ -69,7 +69,7 @@ CalibInc<-  function (mod, pred = NULL,
   if (any(is.na(match(c(all.vars(ag),covars,nb.bma_),names(pred)))))
     stop("Variables specified in aggregate or in the model are missing from the pred table.")
   if(ag!=~1)
-    pred<-pred%>%dplyr::arrange_(all.vars(ag))
+    pred<-pred%>%dplyr::arrange_(rev(all.vars(ag)))
 
   if (!(class(mod)[1] %in% c("glmerMod","glmmPQL")))
     stop("Only glmerMod or glmmPQL object are allowed in mod.")
