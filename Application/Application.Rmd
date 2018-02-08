@@ -2,7 +2,7 @@
 title: Use of a calibration model for count data to predict cancer incidence in areas without cancer registry
 subtitle: Prediction of cancer incidence using cancer registry and hospitalization data
 author:
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "8 February 2018"
 output:
   html_document:
     fig_width: 10
@@ -20,7 +20,7 @@ for the 96 French metropolitan districts over the 2007-2011
 period. The predictions are made using registry incidence data from 14
 districts and hospitalization data for all the districts.
 This exemple served as an illustration of the method in the article
-*"For a sound use of big data in epidemiology: evaluation of a
+*"For a sound use of healthcare data in epidemiology: evaluation of a
 calibration model for count data with application to prediction of
 cancer incidence in areas without cancer registry"*.
 

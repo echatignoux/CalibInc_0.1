@@ -9,25 +9,30 @@ CalibInc(mod, pred = NULL, weight = 1, aggregate = NULL,
 }
 \arguments{
 \item{mod}{Calibration model (type H/I ratio), fitted with
-\code{glmer} or \code{glmmPQL}}
+\code{glmer}, \code{glmmPQL}, \code{gam} or \code{gamm}}
 
-\item{pred}{Data frame containing proxy data to be calibrated. If \code{NULL}, try to use the
-data.frame used for model evaluation (searched in .GlobalEnv).}
+\item{pred}{Data frame containing proxy data to be calibrated. If
+\code{NULL}, try to use the data.frame used for model evaluation
+(searched in .GlobalEnv).}
 
-\item{weight}{Weight vector (size 1 for an uniform weight, same size as
-\code{nrow(pred)} otherwise). \code{weight} can be given as the name of a
-column in \code{pred}.}
+\item{weight}{Weight vector (size 1 for an uniform weight, same
+size as \code{nrow(pred)} otherwise). \code{weight} can be given
+as the name of a column in \code{pred}.}
 
-\item{aggregate}{Aggregate the predictions according to a combination of variables given as a formula
-(see examples). If \code{NULL} aggregation is done according to the combinations of all co-variables
-specified in the model formula.}
+\item{aggregate}{Aggregate the predictions according to a
+combination of variables given as a formula (see examples). If
+\code{NULL} aggregation is done according to the combinations of
+all co-variables specified in the model formula.}
 
-\item{keep.Vp}{Set to \code{TRUE} to keep variances covariance matrix of the predictions}
+\item{keep.Vp}{Set to \code{TRUE} to keep variances covariance
+matrix of the predictions}
 }
 \value{
-A data frame containing predictions values (column \code{pred}) and se (column \code{se})
-   at the levels defined in \code{aggregate}. If keep.Vp=\code{TRUE}, the
-   variances covariance matrix of the predictions is also returned as an attribute.
+A data frame containing predictions values (column
+  \code{pred}) and se (column \code{se}) at the levels defined in
+  \code{aggregate}. If keep.Vp=\code{TRUE}, the variances
+  covariance matrix of the predictions is also returned as an
+  attribute.
 }
 \description{
 \code{CalibInc} functions takes a calibration model and a table with proxy data as
