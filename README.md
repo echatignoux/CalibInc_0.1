@@ -1,7 +1,7 @@
 CalibInc
 ========
 
-Code and material for the article *"For a sound use of big data in epidemiology: evaluation of a calibration model for count data with application to prediction of cancer incidence in areas without cancer registry."*
+Code and material for the article *"For a sound use of healthcare in epidemiology: evaluation of a calibration model for count data with application to prediction of cancer incidence in areas without cancer registry."*
 
 R-package
 ---------
