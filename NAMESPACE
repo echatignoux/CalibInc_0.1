@@ -8,8 +8,3 @@ export(ggMap)
 export(hach.poly)
 export(poly2ggplot)
 export(predict_gam_fixed)
-
-importFrom("methods", "slot")
-importFrom("stats", "as.formula", "density", "filter", "formula",
-           "model.matrix", "na.omit", "na.pass", "predict", "qnorm",
-           "setNames", "terms", "update", "vcov")

@@ -116,7 +116,7 @@ CalibInc<-function (mod, pred = NULL, weight = 1, aggregate = NULL, keep.Vp = FA
     tmp<-tempfile()
     sink(tmp)
     if (mod$method=="REML")
-      sb <- mgcv::gam.vcomp(mod)[sre]^2
+      sb <- mgcv::gam.vcomp(mod)[sre,1]^2
     else sb <- mgcv::gam.vcomp(mod)[sre]^2
     sink()
     file.remove(tmp)
