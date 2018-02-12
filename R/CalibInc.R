@@ -185,7 +185,12 @@ CalibInc<-function (mod, pred = NULL, weight = 1, aggregate = NULL, keep.Vp = FA
   if (class(mod)[1] != "gam") Xp <- model.matrix(lme4::nobars(formula(mod)), pred)
   else if (!is.null(mod_)) Xp <- predict(mod, newdata=pred,type="lpmatrix")
   else if (class(mod)[1] == "gam") Xp <- predict_gam_fixed(mod, newdata=pred)
-  Xdep<- model.matrix(as.formula(paste0("~-1+",re)), data = pred %>% dplyr::mutate_at(re, funs(f)))%>%Matrix::Matrix(.,sparse=T)
+  if (length(unique(pred[,re][[1]]))>1)
+    Xdep <- model.matrix(as.formula(paste0("~-1+", re)),
+                         data = pred %>%
+                           dplyr::mutate_at(re, funs(f))) %>% Matrix::Matrix(.,sparse = T)
+  else   Xdep <- model.matrix(as.formula(~1),
+                              data = pred) %>% Matrix::Matrix(.,sparse = T)
   Xag <- pred %>% dplyr::mutate_at(all.vars(ag), funs(f))
   Xag <- model.matrix(ag, data = droplevels(Xag))
   Xag <- Xag[, colSums(Xag) != 0]
