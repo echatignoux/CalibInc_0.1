@@ -168,7 +168,7 @@ CalibInc<-function (mod, pred = NULL, weight = 1, aggregate = NULL, keep.Vp = FA
     stop("The GLMM data set has changed since evaluation. Specify a prediction dataset trough the pred argument.")
   pred <- pred %>% dplyr::tbl_df() %>% dplyr::ungroup()
   if (ag != ~1)
-    pred <- pred %>% dplyr::arrange_(rev(all.vars(ag)))
+    pred <- pred %>% dplyr::arrange_at(rev(all.vars(ag)))
   pred[, nb.can_] <- 1
   ## Weight
   if (is.name(match.call()$weight))
