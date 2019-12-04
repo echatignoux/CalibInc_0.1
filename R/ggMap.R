@@ -304,8 +304,8 @@ ggMap <-
                 g = ggplotGrob(ggLegMap(legend=legend,
                                         p=p,
                                         color=color,limits=limits))
-                xR<-ggplot_build(p)$layout$panel_ranges[[1]]$x.range
-                yR<-ggplot_build(p)$layout$panel_ranges[[1]]$y.range
+                xR<-ggplot_build(p)$layout$panel_scales_x[[1]]$range$range
+                yR<-ggplot_build(p)$layout$panel_scales_y[[1]]$range$range
                 p<-p + theme(legend.position="none")+
                     annotation_custom(grob = g,
                                       xmin = xR[1]+(xR[2]-xR[1])*legend$placement[1],
